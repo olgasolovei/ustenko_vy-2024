@@ -1,0 +1,49 @@
+@startuml
+
+' Клас RiskMonitoringSystem (Суб’єкт спостереження)
+class RiskMonitoringSystem {
+  - observers: List<Observer>
+  + addObserver(observer: Observer): void
+  + removeObserver(observer: Observer): void
+  + notifyObservers(event: RiskEvent): void
+}
+
+' Інтерфейс Observer (Спостерігач)
+interface Observer {
+  + update(event: RiskEvent): void
+}
+
+' Клас ManagerNotifier (Сповіщення Менеджера)
+class ManagerNotifier {
+  + update(event: RiskEvent): void
+}
+
+' Клас UIComponentNotifier (Сповіщення Інтерфейсу)
+class UIComponentNotifier {
+  + update(event: RiskEvent): void
+}
+
+' Клас RiskEvent (Подія Ризику)
+class RiskEvent {
+  - type: string
+  - date: Date
+  - location: string
+  - status: string
+}
+
+' Клас MainController (Основний Контролер)
+class MainController {
+  - riskMonitoringSystem: RiskMonitoringSystem
+  + registerNotifier(observer: Observer): void
+  + unregisterNotifier(observer: Observer): void
+  + createRiskEvent(event: RiskEvent): void
+}
+
+' Зв'язки
+RiskMonitoringSystem "1" -- "0..*" Observer : notifies
+ManagerNotifier ..|> Observer : implements
+UIComponentNotifier ..|> Observer : implements
+MainController "1" -- "1" RiskMonitoringSystem : manages
+MainController "1" -- "0..*" Observer : registers
+
+@enduml
